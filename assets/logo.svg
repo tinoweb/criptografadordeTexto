@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Fundo circular gradiente -->
+    <circle cx="256" cy="256" r="248" fill="url(#paint0_linear)" stroke="url(#paint1_linear)" stroke-width="16"/>
+    
+    <!-- Símbolo de criptografia -->
+    <g transform="translate(128, 128) scale(0.5)">
+        <!-- Texto estilizado -->
+        <path d="M256 96L384 160L256 224L128 160L256 96Z" fill="#2d3436"/>
+        <path d="M384 160V288L256 352V224L384 160Z" fill="#636e72"/>
+        <path d="M256 352L128 288V160L256 224V352Z" fill="#b2bec3"/>
+        
+        <!-- Símbolos de criptografia -->
+        <g transform="translate(0, -32)">
+            <circle cx="256" cy="256" r="32" fill="#00b894"/>
+            <path d="M256 192V320" stroke="#00b894" stroke-width="16" stroke-linecap="round"/>
+        </g>
+    </g>
+    
+    <!-- Definições de gradientes -->
+    <defs>
+        <linearGradient id="paint0_linear" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f5f7fa"/>
+            <stop offset="100%" stop-color="#c3cfe2"/>
+        </linearGradient>
+        <linearGradient id="paint1_linear" x1="256" y1="0" x2="256" y2="512" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#74b9ff"/>
+            <stop offset="100%" stop-color="#0984e3"/>
+        </linearGradient>
+    </defs>
+</svg>

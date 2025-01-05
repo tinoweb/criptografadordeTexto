@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criptografador de Texto</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+    <link rel="manifest" href="assets/site.webmanifest">
+    
+    <!-- Fontes -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo-container">
+                <img src="assets/logo.svg" alt="Criptografador Logo" class="logo">
+                <h1 class="site-title">Criptografador</h1>
+            </div>
+        </header>
+
+        <div class="input-section">
+            <h2>Escreva Abaixo o Texto Que Deseja Criptografar</h2>
+            <textarea id="inputText" placeholder="Digite seu texto aqui..."></textarea>
+        </div>
+
+        <div class="buttons">
+            <button onclick="criptografar('email')" class="btn email">E-mail</button>
+            <button onclick="criptografar('sms')" class="btn sms">SMS e Marcas</button>
+            <button onclick="criptografar('anuncios')" class="btn anuncios">Anúncios e Sites</button>
+        </div>
+
+        <div class="output-section">
+            <h2>Texto Criptografado:</h2>
+            <textarea id="outputText" readonly class="output-area"></textarea>
+            <div class="action-buttons">
+                <button onclick="copiarTexto()" class="btn copiar">Copiar</button>
+                <button onclick="limparTela()" class="btn limpar">Limpar Tela</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
