@@ -3,13 +3,17 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const mongoose = require('mongoose');
 const compression = require('compression');
 const mongoSanitize = require('express-mongo-sanitize');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const mongoose = require('mongoose');
+const connectDB = require('./config/db');
 
 const app = express();
+
+// Conectar ao MongoDB
+connectDB();
 
 // Middleware de segurança
 app.use(helmet({
@@ -28,10 +32,9 @@ const corsOptions = {
     optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
-app.use(express.json({ limit: '10kb' }));
 
-// Servir arquivos estáticos
-app.use(express.static(path.join(__dirname, '../public')));
+// Parse JSON bodies
+app.use(express.json({ limit: '10kb' }));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -40,10 +43,19 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
-// Routes
+// API Routes - devem vir ANTES das rotas estáticas
+app.use('/api/test', require('./routes/test'));
 app.use('/api/v1/auth', require('./routes/auth'));
 app.use('/api/v1/encryption', require('./routes/encryption'));
 app.use('/api/v1/subscriptions', require('./routes/subscriptions'));
+
+// Servir arquivos estáticos
+app.use(express.static(path.join(__dirname, '../public')));
+
+// Rota para a página de autenticação
+app.get('/auth', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/auth.html'));
+});
 
 // Rota raiz - serve o index.html
 app.get('/', (req, res) => {
@@ -65,28 +77,6 @@ app.use((err, req, res, next) => {
             : err.message
     });
 });
-
-// Database connection with retry logic
-const connectDB = async () => {
-    const connectOptions = {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        serverSelectionTimeoutMS: 5000,
-        socketTimeoutMS: 45000,
-    };
-
-    try {
-        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/cryptotext', connectOptions);
-        console.log('MongoDB Connected');
-    } catch (err) {
-        console.error('MongoDB connection error:', err);
-        // Retry connection after 5 seconds
-        setTimeout(connectDB, 5000);
-    }
-};
-
-// Iniciar conexão com o banco de dados
-connectDB();
 
 // Graceful shutdown
 process.on('SIGTERM', () => {

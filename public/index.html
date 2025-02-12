@@ -3,47 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criptografador de Texto</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="logo.png">
-    <link rel="apple-touch-icon" href="logo.png">
+    <title>Criptografador Pro - Proteja seus textos com segurança</title>
     
     <!-- Fontes -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <!-- CSS -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/css/dark-theme.css">
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <div class="logo-container">
+    <nav class="nav-container">
+        <div class="nav-content">
+            <a href="/" class="nav-brand">
                 <img src="logo.png" alt="Criptografador Logo" class="logo">
-                <h1 class="site-title">Criptografador</h1>
+                <span>
+                    Criptografador
+                    <span class="pro-badge">PRO</span>
+                </span>
+            </a>
+            <div id="authNav" class="nav-actions">
+                <span class="user-greeting">
+                    <i class="fas fa-user"></i>
+                    Olá, <span id="userName">lino</span>
+                </span>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Sair
+                </button>
             </div>
-        </header>
+        </div>
+    </nav>
 
-        <div class="input-section">
-            <h2>Escreva Abaixo o Texto Que Deseja Criptografar</h2>
-            <textarea id="inputText" placeholder="Digite seu texto aqui..."></textarea>
+    <div class="container">
+        <!-- Banner de assinatura -->
+        <div class="subscription-banner logged-in-only">
+            <p>
+                <i class="fas fa-crown"></i>
+                Você está usando uma conta gratuita. 
+                <a href="/planos">Faça upgrade para PRO</a> 
+                e tenha acesso a recursos ilimitados!
+            </p>
         </div>
 
-        <div class="buttons">
-            <button onclick="criptografar('email')" class="btn email">E-mail</button>
-            <button onclick="criptografar('sms')" class="btn sms">SMS e Marcas</button>
-            <button onclick="criptografar('anuncios')" class="btn anuncios">Anúncios e Sites</button>
-        </div>
+        <div class="main-content">
+            <div class="input-section">
+                <h2><i class="fas fa-shield-alt"></i> Criptografe seu texto com segurança</h2>
+                <p class="section-description">
+                    Digite ou cole o texto que você deseja proteger. Nossa tecnologia avançada garante a máxima segurança dos seus dados.
+                </p>
+                <textarea 
+                    id="inputText" 
+                    placeholder="Digite seu texto aqui..."
+                    class="modern-textarea"
+                ></textarea>
+            </div>
 
-        <div class="output-section">
-            <h2>Texto Criptografado:</h2>
-            <textarea id="outputText" readonly class="output-area"></textarea>
-            <div class="action-buttons">
-                <button onclick="copiarTexto()" class="btn copiar">Copiar</button>
-                <button onclick="limparTela()" class="btn limpar">Limpar Tela</button>
+            <div class="buttons">
+                <button onclick="criptografar('email')" class="btn email">
+                    <i class="fas fa-envelope"></i>
+                    E-mail
+                </button>
+                <button onclick="criptografar('sms')" class="btn sms">
+                    <i class="fas fa-comment-alt"></i>
+                    SMS e Marcas
+                </button>
+                <button onclick="criptografar('anuncios')" class="btn anuncios">
+                    <i class="fas fa-ad"></i>
+                    Anúncios e Sites
+                </button>
+            </div>
+
+            <div class="output-section">
+                <h2><i class="fas fa-lock"></i> Texto Criptografado</h2>
+                <p class="section-description">
+                    Seu texto criptografado aparecerá aqui. Copie-o com segurança.
+                </p>
+                <textarea id="outputText" readonly class="output-area modern-textarea"></textarea>
+                <div class="action-buttons">
+                    <button onclick="copiarTexto()" class="btn copiar">
+                        <i class="fas fa-copy"></i>
+                        Copiar
+                    </button>
+                    <button onclick="limparTela()" class="btn limpar">
+                        <i class="fas fa-eraser"></i>
+                        Limpar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Seção de recursos PRO -->
+            <div class="recursos-pro">
+                <h2><i class="fas fa-crown"></i> Recursos PRO</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-infinity"></i>
+                        <h3>Sem limites</h3>
+                        <p>Criptografe textos sem limites de caracteres ou requisições. Ideal para grandes volumes de dados.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-history"></i>
+                        <h3>Histórico completo</h3>
+                        <p>Acesse e gerencie todo seu histórico de textos criptografados com facilidade.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-key"></i>
+                        <h3>Chaves personalizadas</h3>
+                        <p>Use suas próprias chaves de criptografia para maior segurança e controle.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <script src="/js/auth.js"></script>
+    <script src="/script.js"></script>
 </body>
 </html>
