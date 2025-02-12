@@ -1,0 +1,38 @@
+{
+  "name": "cryptotext-saas",
+  "version": "1.0.0",
+  "description": "Professional text encryption service for businesses and individuals",
+  "main": "api/server.js",
+  "scripts": {
+    "start": "node api/server.js",
+    "dev": "nodemon api/server.js",
+    "test": "jest",
+    "build": "npm install && npm run build:client",
+    "build:client": "cd client && npm install && npm run build",
+    "railway:build": "npm run build",
+    "railway:start": "npm start"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.0.0",
+    "stripe": "^12.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "helmet": "^6.0.1",
+    "express-rate-limit": "^6.7.0",
+    "winston": "^3.8.2",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "express-mongo-sanitize": "^2.2.0"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "nodemon": "^2.0.22",
+    "supertest": "^6.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

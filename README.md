@@ -59,7 +59,7 @@ O Criptografador de Texto é uma ferramenta web que permite criar textos visualm
 ### Caracteres Unicode Especiais Utilizados
 - **RTL Override**: \u202E
 - **Zero-Width Space**: \u200B
-- **Caracteres Cirílicos**:
+- **Caracteres **:
   - а (U+0430)
   - е (U+0435)
   - і (U+0456)
