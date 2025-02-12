@@ -12,7 +12,9 @@ const path = require('path');
 const app = express();
 
 // Middleware de segurança
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: false // Desabilitar temporariamente para desenvolvimento
+}));
 app.use(mongoSanitize());
 app.use(compression());
 app.use(cookieParser());
@@ -28,30 +30,30 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '10kb' }));
 
+// Servir arquivos estáticos
+app.use(express.static(path.join(__dirname, '../public')));
+
 // Rate limiting
 const limiter = rateLimit({
-    windowMs: process.env.RATE_LIMIT_WINDOW * 60 * 1000,
-    max: process.env.RATE_LIMIT_MAX,
-    message: 'Too many requests from this IP, please try again later.'
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 100
 });
 app.use('/api', limiter);
-
-// Servir arquivos estáticos em produção
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../client/build')));
-}
 
 // Routes
 app.use('/api/v1/auth', require('./routes/auth'));
 app.use('/api/v1/encryption', require('./routes/encryption'));
 app.use('/api/v1/subscriptions', require('./routes/subscriptions'));
 
-// Servir React App em produção
-if (process.env.NODE_ENV === 'production') {
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, '../client/build/index.html'));
-    });
-}
+// Rota raiz - serve o index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
+});
+
+// Rota catch-all para o frontend
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -74,7 +76,7 @@ const connectDB = async () => {
     };
 
     try {
-        await mongoose.connect(process.env.MONGODB_URI, connectOptions);
+        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/cryptotext', connectOptions);
         console.log('MongoDB Connected');
     } catch (err) {
         console.error('MongoDB connection error:', err);
@@ -83,6 +85,7 @@ const connectDB = async () => {
     }
 };
 
+// Iniciar conexão com o banco de dados
 connectDB();
 
 // Graceful shutdown
@@ -98,5 +101,5 @@ process.on('SIGTERM', () => {
 
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
-    console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+    console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
 });

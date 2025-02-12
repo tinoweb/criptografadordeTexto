@@ -5,27 +5,40 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', Arial, sans-serif;
     background-color: #f0f2f5;
     line-height: 1.6;
 }
 
 .container {
     max-width: 800px;
-    margin: 2rem auto;
+    margin: 0 auto;
     padding: 1rem;
 }
 
-h1 {
+.header {
     text-align: center;
-    color: #333;
+    padding: 1rem 0;
     margin-bottom: 2rem;
 }
 
-h2 {
-    color: #444;
-    margin-bottom: 1rem;
-    font-size: 1.2rem;
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo {
+    width: 80px;
+    height: auto;
+    margin-bottom: 0.5rem;
+}
+
+.site-title {
+    color: #333;
+    font-size: 1.8rem;
+    font-weight: 600;
 }
 
 .input-section, .output-section {
@@ -34,6 +47,12 @@ h2 {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     margin-bottom: 1.5rem;
+}
+
+h2 {
+    color: #444;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
 }
 
 textarea {
@@ -45,6 +64,7 @@ textarea {
     resize: vertical;
     font-size: 1rem;
     margin-bottom: 1rem;
+    font-family: 'Poppins', Arial, sans-serif;
 }
 
 .buttons {
@@ -62,6 +82,7 @@ textarea {
     cursor: pointer;
     font-size: 1rem;
     transition: all 0.3s ease;
+    font-family: 'Poppins', Arial, sans-serif;
 }
 
 .email {
