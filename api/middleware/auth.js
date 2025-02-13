@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-module.exports = async function(req, res, next) {
+// Middleware de proteção de rotas
+exports.protect = async function(req, res, next) {
     try {
         let token;
 

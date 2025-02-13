@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico - Criptografador Pro</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/dark-theme.css">
+    <link rel="stylesheet" href="/css/history.css">
+</head>
+<body>
+    <nav class="nav-container">
+        <div class="nav-content">
+            <a href="/" class="nav-brand">
+                <img src="logo.png" alt="Criptografador Logo" class="logo">
+                <span>
+                    Criptografador
+                    <span class="pro-badge">PRO</span>
+                </span>
+            </a>
+            <div id="authNav" class="nav-actions">
+                <div class="nav-menu">
+                    <a href="/history.html" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        Histórico
+                    </a>
+                    <a href="/profile.html" class="nav-link">
+                        <i class="fas fa-user-circle"></i>
+                        Perfil
+                    </a>
+                </div>
+                <span class="user-greeting">
+                    <i class="fas fa-user"></i>
+                    Olá, <span id="userName">usuário</span>
+                </span>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Sair
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="history-header">
+            <h1><i class="fas fa-history"></i> Histórico de Criptografia</h1>
+            
+            <div class="history-filters">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Buscar no histórico...">
+                </div>
+                
+                <div class="filter-group">
+                    <select id="typeFilter">
+                        <option value="">Todos os tipos</option>
+                        <option value="email">E-mail</option>
+                        <option value="sms">SMS</option>
+                        <option value="custom">Personalizado</option>
+                    </select>
+
+                    <select id="sortFilter">
+                        <option value="newest">Mais recentes</option>
+                        <option value="oldest">Mais antigos</option>
+                    </select>
+
+                    <button class="filter-btn" id="favoriteFilter">
+                        <i class="far fa-star"></i>
+                        Favoritos
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="history-list" id="historyList">
+            <!-- Preenchido via JavaScript -->
+        </div>
+
+        <div class="pagination" id="pagination">
+            <!-- Preenchido via JavaScript -->
+        </div>
+
+        <!-- Modal de Detalhes -->
+        <div id="detailsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Detalhes da Criptografia</h2>
+                    <button class="close-btn" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Texto Original</label>
+                        <textarea id="originalText" readonly rows="3"></textarea>
+                        <button class="btn btn-outline btn-sm" onclick="copyText('originalText')">
+                            <i class="far fa-copy"></i> Copiar
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Texto Criptografado</label>
+                        <textarea id="encryptedText" readonly rows="3"></textarea>
+                        <button class="btn btn-outline btn-sm" onclick="copyText('encryptedText')">
+                            <i class="far fa-copy"></i> Copiar
+                        </button>
+                    </div>
+
+                    <div class="details-meta">
+                        <div class="meta-item">
+                            <label>Tipo de Criptografia:</label>
+                            <span id="encryptionType"></span>
+                        </div>
+                        <div class="meta-item">
+                            <label>Data:</label>
+                            <span id="createdAt"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tags</label>
+                        <div id="tags" class="tags-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/nav.js"></script>
+    <script src="/js/history.js"></script>
+</body>
+</html>

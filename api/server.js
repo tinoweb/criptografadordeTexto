@@ -43,13 +43,15 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
-// API Routes - devem vir ANTES das rotas estáticas
-app.use('/api/test', require('./routes/test'));
+// Definir rotas da API ANTES dos arquivos estáticos
 app.use('/api/v1/auth', require('./routes/auth'));
 app.use('/api/v1/encryption', require('./routes/encryption'));
+app.use('/api/v1/history', require('./routes/history')); // Rota do histórico
+app.use('/api/v1/keys', require('./routes/keys')); // Rota das chaves personalizadas
 app.use('/api/v1/subscriptions', require('./routes/subscriptions'));
+app.use('/api/test', require('./routes/test'));
 
-// Servir arquivos estáticos
+// Servir arquivos estáticos DEPOIS das rotas da API
 app.use(express.static(path.join(__dirname, '../public')));
 
 // Rota para a página de autenticação
@@ -62,8 +64,16 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-// Rota catch-all para o frontend
+// Rota para todas as outras requisições - deve ser a ÚLTIMA
 app.get('*', (req, res) => {
+    // Se a URL começar com /api, retornar erro 404 em JSON
+    if (req.url.startsWith('/api')) {
+        return res.status(404).json({
+            success: false,
+            error: 'API endpoint não encontrado'
+        });
+    }
+    // Caso contrário, retornar o index.html
     res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 

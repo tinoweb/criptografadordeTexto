@@ -84,6 +84,42 @@ body {
     gap: 1rem;
 }
 
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-right: 1.5rem;
+    border-right: 1px solid var(--border-light);
+    padding-right: 1.5rem;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-link i {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+.nav-link.active {
+    color: var(--green-primary);
+    background: rgba(var(--green-primary-rgb), 0.1);
+}
+
 .user-greeting {
     color: var(--text-secondary);
     font-size: 0.95rem;
@@ -116,6 +152,30 @@ body {
 .logout-btn i {
     font-size: 0.9rem;
     opacity: 0.8;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .nav-actions {
+        gap: 0.5rem;
+    }
+
+    .nav-menu {
+        margin-right: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    .nav-link {
+        padding: 0.5rem;
+    }
+
+    .nav-link span {
+        display: none;
+    }
+
+    .nav-link i {
+        font-size: 1.1rem;
+    }
 }
 
 /* Container Principal */

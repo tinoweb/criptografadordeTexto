@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth');
+const { protect } = require('../middleware/auth');
 
 // @route   GET /api/v1/subscriptions/plans
 // @desc    Get all subscription plans
@@ -35,10 +35,10 @@ router.get('/plans', async (req, res) => {
                 price: 99.90,
                 features: [
                     'Criptografias ilimitadas',
-                    'Todos os métodos de criptografia',
-                    'API de integração',
+                    'Métodos personalizados',
+                    'API dedicada',
                     'Suporte 24/7',
-                    'Personalização de métodos'
+                    'SLA garantido'
                 ]
             }
         ];
@@ -55,57 +55,60 @@ router.get('/plans', async (req, res) => {
     }
 });
 
-// @route   POST /api/v1/subscriptions
-// @desc    Create new subscription
+// @route   GET /api/v1/subscriptions/current
+// @desc    Get user's current subscription
 // @access  Private
-router.post('/', auth, async (req, res) => {
+router.get('/current', protect, async (req, res) => {
     try {
-        const { planId } = req.body;
+        const user = req.user;
         
-        // Verificar se o plano é válido
-        if (!['free', 'pro', 'enterprise'].includes(planId)) {
+        res.status(200).json({
+            success: true,
+            data: {
+                plan: user.subscription,
+                expiresAt: user.subscriptionExpiresAt
+            }
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: 'Erro ao buscar assinatura'
+        });
+    }
+});
+
+// @route   POST /api/v1/subscriptions/upgrade
+// @desc    Upgrade user's subscription
+// @access  Private
+router.post('/upgrade', protect, async (req, res) => {
+    try {
+        const { plan } = req.body;
+        const user = req.user;
+
+        if (!['free', 'pro', 'enterprise'].includes(plan)) {
             return res.status(400).json({
                 success: false,
                 error: 'Plano inválido'
             });
         }
 
-        // Atualizar plano do usuário
-        const user = req.user;
-        user.subscription = planId;
+        // Aqui você implementaria a lógica de pagamento
+        // Por enquanto, apenas atualizamos o plano do usuário
+        user.subscription = plan;
+        user.subscriptionExpiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 dias
         await user.save();
 
         res.status(200).json({
             success: true,
             data: {
-                subscription: planId
+                plan: user.subscription,
+                expiresAt: user.subscriptionExpiresAt
             }
         });
     } catch (err) {
         res.status(500).json({
             success: false,
-            error: 'Erro ao criar assinatura'
-        });
-    }
-});
-
-// @route   GET /api/v1/subscriptions/current
-// @desc    Get current subscription
-// @access  Private
-router.get('/current', auth, async (req, res) => {
-    try {
-        const user = req.user;
-        
-        res.status(200).json({
-            success: true,
-            data: {
-                subscription: user.subscription
-            }
-        });
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            error: 'Erro ao buscar assinatura atual'
+            error: 'Erro ao atualizar assinatura'
         });
     }
 });

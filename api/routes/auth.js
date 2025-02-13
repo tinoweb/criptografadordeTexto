@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const auth = require('../middleware/auth');
+const { protect } = require('../middleware/auth');
 
 // @route   POST /api/v1/auth/register
 // @desc    Register user
@@ -63,7 +63,7 @@ router.post('/login', async (req, res) => {
 // @route   GET /api/v1/auth/me
 // @desc    Get current logged in user
 // @access  Private
-router.get('/me', auth, async (req, res) => {
+router.get('/me', protect, async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
         
@@ -74,31 +74,34 @@ router.get('/me', auth, async (req, res) => {
             });
         }
 
-        res.json({
+        res.status(200).json({
             success: true,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                subscription: user.subscription
-            }
+            data: user
         });
     } catch (err) {
-        res.status(500).json({
-            success: false,
-            error: err.message
-        });
+        res.status(500).json({ success: false, error: err.message });
     }
+});
+
+// @route   POST /api/v1/auth/logout
+// @desc    Log user out / clear cookie
+// @access  Private
+router.post('/logout', protect, (req, res) => {
+    res.cookie('token', 'none', {
+        expires: new Date(Date.now() + 10 * 1000),
+        httpOnly: true
+    });
+
+    res.status(200).json({
+        success: true,
+        data: {}
+    });
 });
 
 // Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
     // Create token
-    const token = jwt.sign(
-        { id: user._id },
-        process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRE }
-    );
+    const token = user.getSignedJwtToken();
 
     const options = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
@@ -119,7 +122,7 @@ const sendTokenResponse = (user, statusCode, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                subscription: user.subscription
+                role: user.role
             }
         });
 };
