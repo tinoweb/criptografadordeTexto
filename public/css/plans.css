@@ -1,0 +1,201 @@
+/* Estilos gerais */
+body {
+    background-color: #111827;
+    color: #F9FAFB;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Cabeçalho dos planos */
+.plans-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.plans-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.plans-header h1 i {
+    color: #FCD34D;
+}
+
+.plans-header p {
+    color: #9CA3AF;
+    font-size: 1.1rem;
+}
+
+/* Grid de planos */
+.plans-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* Cards dos planos */
+.plan-card {
+    background: #1F2937;
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    border: 1px solid #374151;
+    transition: all 0.3s ease;
+}
+
+.plan-card:hover {
+    transform: translateY(-5px);
+    border-color: #4F46E5;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.plan-card.featured {
+    border: 2px solid #4F46E5;
+    background: linear-gradient(180deg, #1F2937 0%, #111827 100%);
+}
+
+.plan-badge {
+    position: absolute;
+    top: -12px;
+    right: 24px;
+    background: #4F46E5;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Cabeçalho do card */
+.plan-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #374151;
+}
+
+.plan-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #F9FAFB;
+}
+
+.plan-price {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 4px;
+}
+
+.plan-price .currency {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #9CA3AF;
+}
+
+.plan-price .amount {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #F9FAFB;
+}
+
+.plan-price .period {
+    font-size: 1rem;
+    color: #9CA3AF;
+}
+
+/* Lista de features */
+.plan-features {
+    margin-bottom: 2rem;
+}
+
+.plan-features ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.plan-features li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1rem;
+    color: #D1D5DB;
+    font-size: 0.95rem;
+}
+
+.plan-features i.fa-check {
+    color: #10B981;
+    font-size: 1rem;
+}
+
+.plan-features i.fa-times {
+    color: #EF4444;
+    font-size: 1rem;
+}
+
+/* Botões */
+.plan-footer {
+    text-align: center;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #4F46E5;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #4338CA;
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid #4F46E5;
+    color: #4F46E5;
+}
+
+.btn-outline:hover {
+    background: rgba(79, 70, 229, 0.1);
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    .plans-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .plans-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .plan-card {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+}

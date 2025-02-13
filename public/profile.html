@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Criptografador Pro</title>
+    
+    <!-- Fontes -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/dark-theme.css">
+</head>
+<body>
+    <nav class="nav-container">
+        <div class="nav-content">
+            <a href="/" class="nav-brand">
+                <img src="logo.png" alt="Criptografador Logo" class="logo">
+                <span class="brand-text">Criptografador</span>
+            </a>
+            <div id="authNav" class="nav-actions">
+                <div class="nav-menu">
+                    <a href="/history.html" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        Histórico
+                    </a>
+                    <a href="/profile.html" class="nav-link active">
+                        <i class="fas fa-user-circle"></i>
+                        Perfil
+                    </a>
+                </div>
+                <span class="user-greeting">
+                    <i class="fas fa-user"></i>
+                    Olá, <span class="user-name"></span>
+                </span>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Sair
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="profile-header">
+            <h1>Meu Perfil</h1>
+            <p>Gerencie suas informações e configurações</p>
+        </div>
+
+        <div class="profile-grid">
+            <!-- Informações Pessoais -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <i class="fas fa-user-circle"></i>
+                    <h2>Informações Pessoais</h2>
+                </div>
+                <div class="card-content">
+                    <div class="form-group">
+                        <label>Nome</label>
+                        <input type="text" id="userName" class="input-dark" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="userEmail" class="input-dark" disabled>
+                    </div>
+                    <button class="btn btn-outline" onclick="enableEdit()">
+                        <i class="fas fa-edit"></i>
+                        Editar Informações
+                    </button>
+                </div>
+            </div>
+
+            <!-- Plano Atual -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <i class="fas fa-crown"></i>
+                    <h2>Plano Atual</h2>
+                </div>
+                <div class="card-content" id="planInfo">
+                    <div class="plan-badge">
+                        <span class="plan-name"></span>
+                        <span class="plan-status"></span>
+                    </div>
+                    <div class="plan-details">
+                        <p class="subscription-since">Assinante desde: <span id="subscriptionDate"></span></p>
+                        <p class="next-payment">Próxima cobrança: <span id="nextPayment"></span></p>
+                    </div>
+                    <a href="/plans.html" class="btn btn-primary">
+                        <i class="fas fa-arrow-up"></i>
+                        Gerenciar Plano
+                    </a>
+                </div>
+            </div>
+
+            <!-- Estatísticas de Uso -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar"></i>
+                    <h2>Estatísticas de Uso</h2>
+                </div>
+                <div class="card-content">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalEncryptions">0</span>
+                            <span class="stat-label">Textos Criptografados</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalDecryptions">0</span>
+                            <span class="stat-label">Textos Descriptografados</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="savedKeys">0</span>
+                            <span class="stat-label">Chaves Salvas</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preferências -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <i class="fas fa-cog"></i>
+                    <h2>Preferências</h2>
+                </div>
+                <div class="card-content">
+                    <div class="preference-item">
+                        <label class="switch-label">
+                            <span>Salvar histórico automaticamente</span>
+                            <label class="switch">
+                                <input type="checkbox" id="autoSaveHistory">
+                                <span class="slider round"></span>
+                            </label>
+                        </label>
+                    </div>
+                    <div class="preference-item">
+                        <label class="switch-label">
+                            <span>Notificações por email</span>
+                            <label class="switch">
+                                <input type="checkbox" id="emailNotifications">
+                                <span class="slider round"></span>
+                            </label>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast para notificações -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Scripts -->
+    <script src="/js/auth.js"></script>
+    <script src="/js/profile.js"></script>
+</body>
+</html>

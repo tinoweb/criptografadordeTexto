@@ -121,6 +121,11 @@
             text-align: center;
         }
 
+        .benefits-section h2 {
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+        }
+
         .benefits-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -133,6 +138,12 @@
             padding: 1.5rem;
             border-radius: 12px;
             border: 1px solid var(--border-light);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--green-primary);
         }
 
         .benefit-card i {
@@ -142,7 +153,7 @@
         }
 
         .benefit-card h3 {
-            font-size: 1rem;
+            font-size: 1.1rem;
             margin-bottom: 0.5rem;
             color: var(--text-primary);
         }
@@ -150,6 +161,12 @@
         .benefit-card p {
             font-size: 14px;
             color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @media (max-width: 768px) {
@@ -184,7 +201,7 @@
                 </button>
             </div>
 
-            <div id="messageBox" class="message"></div>
+            <div id="message" class="message"></div>
 
             <form id="loginForm" class="auth-form active">
                 <div class="form-group">
@@ -235,17 +252,17 @@
                 <div class="benefit-card">
                     <i class="fas fa-shield-alt"></i>
                     <h3>Segurança Máxima</h3>
-                    <p>Criptografia de ponta a ponta para seus dados</p>
+                    <p>Criptografia de ponta a ponta para seus dados, garantindo proteção total das suas informações.</p>
                 </div>
                 <div class="benefit-card">
                     <i class="fas fa-bolt"></i>
                     <h3>Alta Performance</h3>
-                    <p>Processamento rápido e eficiente</p>
+                    <p>Processamento rápido e eficiente, ideal para grandes volumes de dados e uso empresarial.</p>
                 </div>
                 <div class="benefit-card">
                     <i class="fas fa-clock"></i>
                     <h3>Disponibilidade 24/7</h3>
-                    <p>Acesse quando e onde precisar</p>
+                    <p>Acesse e proteja seus dados a qualquer momento, de qualquer lugar, com total segurança.</p>
                 </div>
             </div>
         </div>
@@ -265,19 +282,19 @@
             });
             document.getElementById(`${tabName}Form`).classList.add('active');
 
-            // Limpar mensagens
+            // Limpar mensagem
             hideMessage();
         }
 
         function showMessage(message, type = 'error') {
-            const messageBox = document.getElementById('messageBox');
-            messageBox.textContent = message;
-            messageBox.className = `message ${type}`;
-            messageBox.style.display = 'block';
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = message;
+            messageEl.className = `message ${type}`;
+            messageEl.style.display = 'block';
         }
 
         function hideMessage() {
-            document.getElementById('messageBox').style.display = 'none';
+            document.getElementById('message').style.display = 'none';
         }
 
         // Login
@@ -297,17 +314,17 @@
 
                 const data = await response.json();
                 
-                if (data.success) {
+                if (data.status === 'success') {
                     // Salvar token e dados do usuário
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('token', data.data.token);
+                    localStorage.setItem('user', JSON.stringify(data.data.user));
                     showMessage('Login realizado com sucesso!', 'success');
                     // Redirecionar para a página principal após 1 segundo
                     setTimeout(() => {
                         window.location.href = '/';
                     }, 1000);
                 } else {
-                    showMessage(data.error || 'Erro ao fazer login');
+                    showMessage(data.message || 'Erro ao fazer login');
                 }
             } catch (error) {
                 showMessage('Erro ao conectar com o servidor');
@@ -332,17 +349,17 @@
 
                 const data = await response.json();
                 
-                if (data.success) {
+                if (data.status === 'success') {
                     // Salvar token e dados do usuário
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('token', data.data.token);
+                    localStorage.setItem('user', JSON.stringify(data.data.user));
                     showMessage('Registro realizado com sucesso!', 'success');
                     // Redirecionar para a página principal após 1 segundo
                     setTimeout(() => {
                         window.location.href = '/';
                     }, 1000);
                 } else {
-                    showMessage(data.error || 'Erro ao registrar');
+                    showMessage(data.message || 'Erro ao registrar');
                 }
             } catch (error) {
                 showMessage('Erro ao conectar com o servidor');

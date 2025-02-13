@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planos - Criptografador Pro</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Planos - Criptografador de Texto</title>
     <link rel="stylesheet" href="/css/dark-theme.css">
     <link rel="stylesheet" href="/css/plans.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Stripe JS -->
+    <script src="https://js.stripe.com/v3/" defer crossorigin="anonymous"></script>
 </head>
 <body>
     <nav class="nav-container">
@@ -45,8 +46,8 @@
 
     <main class="container">
         <section class="plans-header">
-            <h1><i class="fas fa-crown"></i> Planos e Preços</h1>
-            <p>Escolha o plano ideal para suas necessidades</p>
+            <h1><i class="fas fa-crown"></i> Nossos Planos</h1>
+            <p>Escolha o plano ideal para suas necessidades de criptografia</p>
         </section>
 
         <section class="plans-grid">
@@ -62,34 +63,20 @@
                 </div>
                 <div class="plan-features">
                     <ul>
-                        <li>
-                            <i class="fas fa-check"></i>
-                            Criptografia básica
-                        </li>
-                        <li>
-                            <i class="fas fa-check"></i>
-                            Histórico limitado (30 dias)
-                        </li>
-                        <li>
-                            <i class="fas fa-check"></i>
-                            5 chaves personalizadas
-                        </li>
-                        <li>
-                            <i class="fas fa-times"></i>
-                            Sem suporte prioritário
-                        </li>
+                        <li><i class="fas fa-check"></i> Criptografia básica</li>
+                        <li><i class="fas fa-check"></i> Histórico limitado (30 dias)</li>
+                        <li><i class="fas fa-check"></i> 5 chaves personalizadas</li>
+                        <li><i class="fas fa-times"></i> Sem suporte prioritário</li>
                     </ul>
                 </div>
                 <div class="plan-footer">
-                    <button class="btn btn-outline" onclick="selectPlan('free')" id="freePlanBtn">
-                        Plano Atual
-                    </button>
+                    <button id="freePlanBtn" class="btn btn-outline" onclick="selectPlan('free')">Plano Atual</button>
                 </div>
             </div>
 
             <!-- Plano Pro -->
             <div class="plan-card featured">
-                <div class="plan-badge">Mais Popular</div>
+                <div class="plan-badge">Popular</div>
                 <div class="plan-header">
                     <h2>Pro</h2>
                     <div class="plan-price">
@@ -100,36 +87,16 @@
                 </div>
                 <div class="plan-features">
                     <ul>
-                        <li>
-                            <i class="fas fa-check"></i>
-                            Todas as criptografias
-                        </li>
-                        <li>
-                            <i class="fas fa-check"></i>
-                            Histórico ilimitado
-                        </li>
-                        <li>
-                            <i class="fas fa-check"></i>
-                            Chaves personalizadas ilimitadas
-                        </li>
-                        <li>
-                            <i class="fas fa-check"></i>
-                            Suporte prioritário 24/7
-                        </li>
-                        <li>
-                            <i class="fas fa-check"></i>
-                            Backup na nuvem
-                        </li>
-                        <li>
-                            <i class="fas fa-check"></i>
-                            API de integração
-                        </li>
+                        <li><i class="fas fa-check"></i> Todas as criptografias</li>
+                        <li><i class="fas fa-check"></i> Histórico ilimitado</li>
+                        <li><i class="fas fa-check"></i> Chaves personalizadas ilimitadas</li>
+                        <li><i class="fas fa-check"></i> Suporte prioritário 24/7</li>
+                        <li><i class="fas fa-check"></i> Backup na nuvem</li>
+                        <li><i class="fas fa-check"></i> API de integração</li>
                     </ul>
                 </div>
                 <div class="plan-footer">
-                    <button class="btn btn-primary" onclick="selectPlan('pro')" id="proPlanBtn">
-                        Assinar Pro
-                    </button>
+                    <button id="proPlanBtn" class="btn btn-primary" onclick="selectPlan('pro')">Assinar Pro</button>
                 </div>
             </div>
 
@@ -138,78 +105,26 @@
                 <div class="plan-header">
                     <h2>Enterprise</h2>
                     <div class="plan-price">
-                        <span class="price-custom">Personalizado</span>
+                        <span class="amount">Personalizado</span>
                     </div>
                 </div>
                 <div class="plan-features">
                     <ul>
-                        <li>
-                            <i class="fas fa-check"></i>
-                            Todas as features Pro
-                        </li>
-                        <li>
-                            <i class="fas fa-check"></i>
-                            Instalação local
-                        </li>
-                        <li>
-                            <i class="fas fa-check"></i>
-                            Customização total
-                        </li>
-                        <li>
-                            <i class="fas fa-check"></i>
-                            Gerenciamento dedicado
-                        </li>
-                        <li>
-                            <i class="fas fa-check"></i>
-                            SLA garantido
-                        </li>
+                        <li><i class="fas fa-check"></i> Todas as features Pro</li>
+                        <li><i class="fas fa-check"></i> Instalação local</li>
+                        <li><i class="fas fa-check"></i> Customização total</li>
+                        <li><i class="fas fa-check"></i> Gerenciamento dedicado</li>
+                        <li><i class="fas fa-check"></i> SLA garantido</li>
                     </ul>
                 </div>
                 <div class="plan-footer">
-                    <button class="btn btn-outline" onclick="contactSales()">
-                        Falar com Vendas
-                    </button>
+                    <button id="enterprisePlanBtn" class="btn btn-outline" onclick="selectPlan('enterprise')">Contatar Vendas</button>
                 </div>
             </div>
         </section>
-
-        <!-- Modal de Confirmação -->
-        <div id="confirmModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Confirmar Assinatura</h2>
-                    <button class="close-btn" onclick="closeModal()">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <p>Você está prestes a assinar o plano <span id="selectedPlan">Pro</span>.</p>
-                    <div class="payment-details">
-                        <div class="form-group">
-                            <label>Número do Cartão</label>
-                            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456">
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Validade</label>
-                                <input type="text" id="cardExpiry" placeholder="MM/AA">
-                            </div>
-                            <div class="form-group">
-                                <label>CVV</label>
-                                <input type="text" id="cardCvv" placeholder="123">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
-                    <button class="btn btn-primary" onclick="processPurchase()">
-                        <i class="fas fa-lock"></i>
-                        Confirmar Pagamento
-                    </button>
-                </div>
-            </div>
-        </div>
     </main>
 
+    <script src="https://js.stripe.com/v3/"></script>
     <script src="/js/nav.js"></script>
     <script src="/js/plans.js"></script>
 </body>

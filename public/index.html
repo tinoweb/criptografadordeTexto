@@ -19,9 +19,8 @@
         <div class="nav-content">
             <a href="/" class="nav-brand">
                 <img src="logo.png" alt="Criptografador Logo" class="logo">
-                <span>
+                <span class="brand-text">
                     Criptografador
-                    <span class="pro-badge">PRO</span>
                 </span>
             </a>
             <div id="authNav" class="nav-actions">
@@ -37,7 +36,7 @@
                 </div>
                 <span class="user-greeting">
                     <i class="fas fa-user"></i>
-                    Olá, <span id="userName">lino</span>
+                    Olá, <span class="user-name"></span>
                 </span>
                 <button class="logout-btn" onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i>
@@ -47,15 +46,20 @@
         </div>
     </nav>
 
+    <!-- Banner de upgrade -->
+    <div class="upgrade-banner" style="display: none;">
+        👑 Você está usando uma conta gratuita. 
+        <a href="/plans.html" class="upgrade-link">Faça upgrade para PRO</a>
+        e tenha acesso a recursos ilimitados!
+    </div>
+
     <div class="container">
-        <!-- Banner de assinatura -->
-        <div class="subscription-banner logged-in-only">
-            <p>
-                <i class="fas fa-crown"></i>
-                Você está usando uma conta gratuita. 
-                <a href="/planos">Faça upgrade para PRO</a> 
-                e tenha acesso a recursos ilimitados!
-            </p>
+        <!-- Banner de boas-vindas PRO -->
+        <div class="welcome-banner" style="display: none;">
+            <div class="welcome-content">
+                <span class="pro-icon">⭐</span>
+                <span class="welcome-text"></span>
+            </div>
         </div>
 
         <div class="main-content">
@@ -69,38 +73,55 @@
                     placeholder="Digite seu texto aqui..."
                     class="modern-textarea"
                 ></textarea>
-            </div>
 
-            <div class="buttons">
-                <button onclick="criptografar('email')" class="btn email">
-                    <i class="fas fa-envelope"></i>
-                    E-mail
-                </button>
-                <button onclick="criptografar('sms')" class="btn sms">
-                    <i class="fas fa-comment-alt"></i>
-                    SMS e Marcas
-                </button>
-                <button onclick="criptografar('anuncios')" class="btn anuncios">
-                    <i class="fas fa-ad"></i>
-                    Anúncios e Sites
-                </button>
-            </div>
+                <div class="encryption-options">
+                    <div class="encryption-type">
+                        <label for="encryptionType">Tipo de Criptografia:</label>
+                        <select id="encryptionType" class="select-dark">
+                            <option value="caesar">Caesar Cipher</option>
+                            <option value="vigenere">Vigenère Cipher</option>
+                            <option value="aes">AES-256</option>
+                            <option value="rsa">RSA</option>
+                        </select>
+                    </div>
+                    
+                    <div class="encryption-key">
+                        <label for="encryptionKey">Chave de Criptografia:</label>
+                        <input 
+                            type="text" 
+                            id="encryptionKey" 
+                            class="input-dark"
+                            placeholder="Digite sua chave..."
+                        >
+                    </div>
+                </div>
 
-            <div class="output-section">
-                <h2><i class="fas fa-lock"></i> Texto Criptografado</h2>
-                <p class="section-description">
-                    Seu texto criptografado aparecerá aqui. Copie-o com segurança.
-                </p>
-                <textarea id="outputText" readonly class="output-area modern-textarea"></textarea>
                 <div class="action-buttons">
-                    <button onclick="copiarTexto()" class="btn copiar">
-                        <i class="fas fa-copy"></i>
-                        Copiar
+                    <button id="encryptBtn" class="btn btn-primary">
+                        <i class="fas fa-lock"></i>
+                        Criptografar
                     </button>
-                    <button onclick="limparTela()" class="btn limpar">
-                        <i class="fas fa-eraser"></i>
-                        Limpar
+                    <button id="decryptBtn" class="btn btn-outline">
+                        <i class="fas fa-unlock"></i>
+                        Descriptografar
                     </button>
+                </div>
+            </div>
+
+            <div id="result" class="output-section">
+                <h2><i class="fas fa-lock"></i> Resultado</h2>
+                <div class="result-content">
+                    <textarea id="outputText" readonly class="modern-textarea"></textarea>
+                    <div class="action-buttons">
+                        <button onclick="copyToClipboard()" class="btn btn-outline">
+                            <i class="fas fa-copy"></i>
+                            Copiar
+                        </button>
+                        <button onclick="clearText()" class="btn btn-outline">
+                            <i class="fas fa-eraser"></i>
+                            Limpar
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -111,17 +132,17 @@
                     <div class="feature-card">
                         <i class="fas fa-infinity"></i>
                         <h3>Sem limites</h3>
-                        <p>Criptografe textos sem limites de caracteres ou requisições. Ideal para grandes volumes de dados.</p>
+                        <p>Criptografe textos sem limites de caracteres ou requisições.</p>
                     </div>
                     <div class="feature-card">
                         <i class="fas fa-history"></i>
                         <h3>Histórico completo</h3>
-                        <p>Acesse e gerencie todo seu histórico de textos criptografados com facilidade.</p>
+                        <p>Acesse todo seu histórico de textos criptografados.</p>
                     </div>
                     <div class="feature-card">
                         <i class="fas fa-key"></i>
                         <h3>Chaves personalizadas</h3>
-                        <p>Use suas próprias chaves de criptografia para maior segurança e controle.</p>
+                        <p>Use suas próprias chaves de criptografia.</p>
                     </div>
                 </div>
             </div>

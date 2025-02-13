@@ -18,6 +18,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadHistory();
     setupEventListeners();
+
+    // Adicionar listener para fechar modal com ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+
+    // Adicionar listener para fechar modal clicando fora
+    const modal = document.getElementById('detailsModal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    }
 });
 
 // Configurar listeners de eventos
@@ -73,40 +90,28 @@ async function loadHistory() {
             ...(currentFilters.search && { search: currentFilters.search }),
             ...(currentFilters.type && { type: currentFilters.type }),
             ...(currentFilters.favorite && { favorite: true }),
-            sort: currentFilters.sort
+            sort: currentFilters.sort === 'newest' ? 'desc' : 'asc'
         });
 
-        // Log para debug
-        console.log('Fazendo requisição para:', `/api/v1/history?${queryParams}`);
-        console.log('Token:', token);
-
         const response = await fetch(`/api/v1/history?${queryParams}`, {
-            method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Accept': 'application/json'
             }
         });
 
-        // Log para debug
-        console.log('Status da resposta:', response.status);
-        const responseText = await response.text();
-        console.log('Resposta do servidor:', responseText);
-
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error('Erro ao carregar histórico');
         }
 
-        // Converter texto para JSON
-        const data = JSON.parse(responseText);
+        const data = await response.json();
         
-        if (!data.success) {
-            throw new Error(data.error || 'Erro ao carregar histórico');
+        if (data.status === 'success') {
+            renderHistory(data.data.history);
+            renderPagination(data.data.pagination);
+        } else {
+            throw new Error(data.message || 'Erro ao carregar histórico');
         }
-
-        renderHistory(data.data);
-        renderPagination(data.pagination);
     } catch (error) {
         console.error('Erro ao carregar histórico:', error);
         showError('Erro ao carregar histórico. Por favor, tente novamente.');
@@ -149,22 +154,22 @@ function renderHistory(items) {
                     </button>
                 </div>
             </div>
-            
             <div class="item-content">
-                <div class="text-preview">
-                    <strong>Original:</strong> ${item.originalText.substring(0, 50)}${item.originalText.length > 50 ? '...' : ''}
+                <div class="item-text">
+                    <p class="original-text">${item.originalText.substring(0, 100)}${item.originalText.length > 100 ? '...' : ''}</p>
+                    <p class="encrypted-text">${item.encryptedText.substring(0, 100)}${item.encryptedText.length > 100 ? '...' : ''}</p>
                 </div>
-                <div class="text-preview">
-                    <strong>Criptografado:</strong> ${item.encryptedText.substring(0, 50)}${item.encryptedText.length > 50 ? '...' : ''}
+                <div class="item-meta">
+                    <span class="date">
+                        <i class="far fa-clock"></i>
+                        ${formatDate(item.createdAt)}
+                    </span>
+                    ${item.tags && item.tags.length > 0 ? `
+                        <div class="tags">
+                            ${renderTags(item.tags)}
+                        </div>
+                    ` : ''}
                 </div>
-            </div>
-            
-            <div class="item-footer">
-                <div class="item-date">
-                    <i class="far fa-clock"></i>
-                    ${formatDate(item.createdAt)}
-                </div>
-                ${renderTags(item.tags)}
             </div>
         </div>
     `).join('');
@@ -172,120 +177,134 @@ function renderHistory(items) {
 
 // Renderizar paginação
 function renderPagination({ page, pages, total }) {
-    const pagination = document.getElementById('pagination');
-    
-    if (pages <= 1) {
-        pagination.innerHTML = '';
+    const paginationEl = document.getElementById('pagination');
+    if (!paginationEl) return;
+
+    if (total === 0) {
+        paginationEl.innerHTML = '';
         return;
     }
 
-    let buttons = [];
-    
-    // Primeira página
-    buttons.push(`
-        <button class="page-btn ${page === 1 ? 'active' : ''}" 
-                onclick="changePage(1)">1</button>
-    `);
+    let html = '<div class="pagination">';
 
-    // Páginas do meio
-    if (pages > 5) {
-        if (page > 3) {
-            buttons.push('<span class="page-ellipsis">...</span>');
-        }
+    // Botão anterior
+    if (page > 1) {
+        html += `<button onclick="changePage(${page - 1})" class="page-btn">
+            <i class="fas fa-chevron-left"></i>
+        </button>`;
+    }
 
-        for (let i = Math.max(2, page - 1); i <= Math.min(pages - 1, page + 1); i++) {
-            buttons.push(`
-                <button class="page-btn ${page === i ? 'active' : ''}" 
-                        onclick="changePage(${i})">${i}</button>
-            `);
-        }
-
-        if (page < pages - 2) {
-            buttons.push('<span class="page-ellipsis">...</span>');
-        }
-    } else {
-        for (let i = 2; i < pages; i++) {
-            buttons.push(`
-                <button class="page-btn ${page === i ? 'active' : ''}" 
-                        onclick="changePage(${i})">${i}</button>
-            `);
+    // Páginas
+    for (let i = 1; i <= pages; i++) {
+        if (
+            i === 1 || // Primeira página
+            i === pages || // Última página
+            (i >= page - 2 && i <= page + 2) // 2 páginas antes e depois da atual
+        ) {
+            html += `<button onclick="changePage(${i})" class="page-btn ${i === page ? 'active' : ''}">${i}</button>`;
+        } else if (
+            (i === page - 3 && page > 4) || // Reticências antes
+            (i === page + 3 && page < pages - 3) // Reticências depois
+        ) {
+            html += '<span class="page-dots">...</span>';
         }
     }
 
-    // Última página
-    if (pages > 1) {
-        buttons.push(`
-            <button class="page-btn ${page === pages ? 'active' : ''}" 
-                    onclick="changePage(${pages})">${pages}</button>
-        `);
+    // Botão próximo
+    if (page < pages) {
+        html += `<button onclick="changePage(${page + 1})" class="page-btn">
+            <i class="fas fa-chevron-right"></i>
+        </button>`;
     }
 
-    pagination.innerHTML = buttons.join('');
+    html += '</div>';
+    paginationEl.innerHTML = html;
 }
 
 // Funções auxiliares
 function getTypeIcon(type) {
     const icons = {
-        email: 'envelope',
-        sms: 'comment',
-        custom: 'key'
+        email: 'fa-envelope',
+        sms: 'fa-comment-alt',
+        anuncios: 'fa-ad'
     };
-    return icons[type] || 'question';
+    return `<i class="fas ${icons[type] || 'fa-lock'}"></i>`;
 }
 
 function getTypeName(type) {
     const names = {
         email: 'E-mail',
         sms: 'SMS',
-        custom: 'Personalizado'
+        anuncios: 'Anúncios'
     };
-    return names[type] || 'Desconhecido';
+    return names[type] || type;
 }
 
 function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+    try {
+        if (!dateString) return 'Data não disponível';
+        
+        // Se for um timestamp numérico
+        if (typeof dateString === 'number') {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return 'Data inválida';
+            return new Intl.DateTimeFormat('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }).format(date);
+        }
+        
+        // Se for uma string ISO ou outra formato
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'Data inválida';
+        
+        return new Intl.DateTimeFormat('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        }).format(date);
+    } catch (error) {
+        console.error('Erro ao formatar data:', error);
+        return 'Data inválida';
+    }
 }
 
 function renderTags(tags) {
-    if (!tags || tags.length === 0) return '';
     return tags.map(tag => `
         <span class="tag">${tag}</span>
     `).join('');
 }
 
 function showLoading() {
-    const historyList = document.getElementById('historyList');
-    historyList.innerHTML = `
-        <div class="loading">
-            <i class="fas fa-spinner fa-spin"></i>
-            <p>Carregando histórico...</p>
-        </div>
-    `;
+    const loadingEl = document.getElementById('loading');
+    if (loadingEl) {
+        loadingEl.classList.add('show');
+    }
 }
 
 function hideLoading() {
-    // O loading será substituído pelo conteúdo quando o histórico for carregado
+    const loadingEl = document.getElementById('loading');
+    if (loadingEl) {
+        loadingEl.classList.remove('show');
+    }
 }
 
 function showError(message) {
-    const historyList = document.getElementById('historyList');
-    historyList.innerHTML = `
-        <div class="error-state">
-            <i class="fas fa-exclamation-circle"></i>
-            <p>${message}</p>
-            <button onclick="loadHistory()" class="retry-btn">
-                <i class="fas fa-redo"></i>
-                Tentar novamente
-            </button>
-        </div>
+    const errorEl = document.createElement('div');
+    errorEl.className = 'error-message';
+    errorEl.innerHTML = `
+        <i class="fas fa-exclamation-circle"></i>
+        <span>${message}</span>
     `;
+    document.body.appendChild(errorEl);
+    setTimeout(() => {
+        errorEl.remove();
+    }, 5000);
 }
 
 // Ações do usuário
@@ -293,18 +312,20 @@ async function toggleFavorite(id) {
     try {
         const token = localStorage.getItem('token');
         const response = await fetch(`/api/v1/history/${id}/favorite`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
 
-        const data = await response.json();
-        if (data.success) {
-            loadHistory();
+        if (!response.ok) {
+            throw new Error('Erro ao atualizar favorito');
         }
+
+        loadHistory(); // Recarregar lista
     } catch (error) {
-        console.error('Erro ao marcar favorito:', error);
+        console.error('Erro ao atualizar favorito:', error);
+        showError('Erro ao atualizar favorito');
     }
 }
 
@@ -322,56 +343,71 @@ async function deleteEntry(id) {
             }
         });
 
-        const data = await response.json();
-        if (data.success) {
-            loadHistory();
+        if (!response.ok) {
+            throw new Error('Erro ao excluir item');
         }
+
+        loadHistory(); // Recarregar lista
     } catch (error) {
         console.error('Erro ao excluir item:', error);
+        showError('Erro ao excluir item');
     }
 }
 
 async function showDetails(id) {
-    try {
-        showLoading();
-        const response = await fetch(`/api/v1/history/${id}`, {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Erro ao carregar detalhes');
+    console.log('Abrindo detalhes para ID:', id);
+    
+    fetch(`/api/v1/history/${id}`, {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Accept': 'application/json'
         }
-
-        const { data } = await response.json();
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Dados recebidos:', data);
         
-        // Preencher os campos do modal com os dados
-        document.getElementById('originalText').value = data.originalText || '';
-        document.getElementById('encryptedText').value = data.encryptedText || '';
-        document.getElementById('encryptionType').textContent = getTypeName(data.encryptionType);
-        document.getElementById('createdAt').textContent = formatDate(data.createdAt);
+        if (!data.data) throw new Error('Dados não encontrados');
         
-        if (data.tags && data.tags.length > 0) {
-            document.getElementById('tags').innerHTML = renderTags(data.tags);
-        } else {
-            document.getElementById('tags').innerHTML = '<span class="no-tags">Sem tags</span>';
-        }
-
-        // Exibir o modal
-        const modal = document.getElementById('detailsModal');
-        modal.classList.add('active');
-    } catch (error) {
-        showError('Erro ao carregar detalhes do histórico');
+        const item = data.data;
+        
+        // Preencher dados
+        document.getElementById('originalText').value = item.originalText || '';
+        document.getElementById('encryptedText').value = item.encryptedText || '';
+        document.getElementById('encryptionType').textContent = getTypeName(item.encryptionType);
+        document.getElementById('createdAt').textContent = formatDate(item.createdAt);
+        
+        // Tags
+        const tagsEl = document.getElementById('tags');
+        tagsEl.innerHTML = item.tags?.length 
+            ? item.tags.map(tag => `<span style="padding: 4px 8px; background: #2a2a2a; border: 1px solid #333; border-radius: 4px; color: #888;">${tag}</span>`).join('')
+            : '<span style="color: #666; font-style: italic;">Sem tags</span>';
+        
+        // Mostrar modal
+        document.getElementById('detailsModal').style.display = 'block';
+    })
+    .catch(error => {
         console.error('Erro:', error);
-    } finally {
-        hideLoading();
-    }
+        alert('Erro ao carregar detalhes');
+    });
 }
 
 function closeModal() {
-    const modal = document.getElementById('detailsModal');
-    modal.classList.remove('active');
+    document.getElementById('detailsModal').style.display = 'none';
+}
+
+function copyText(elementId) {
+    const el = document.getElementById(elementId);
+    const text = el.value;
+    
+    navigator.clipboard.writeText(text)
+        .then(() => {
+            const btn = el.nextElementSibling;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+            setTimeout(() => btn.innerHTML = originalText, 2000);
+        })
+        .catch(() => alert('Erro ao copiar texto'));
 }
 
 function changePage(page) {
@@ -379,20 +415,10 @@ function changePage(page) {
     loadHistory();
 }
 
-// Funções de cópia
-function copyText(elementId) {
-    const element = document.getElementById(elementId);
-    const text = element.textContent;
-    
-    navigator.clipboard.writeText(text).then(() => {
-        // Mostrar feedback visual
-        const button = element.nextElementSibling;
-        const originalText = button.innerHTML;
-        button.innerHTML = '<i class="fas fa-check"></i> Copiado!';
-        setTimeout(() => {
-            button.innerHTML = originalText;
-        }, 2000);
-    }).catch(err => {
-        console.error('Erro ao copiar texto:', err);
-    });
-}
+// Tornar funções disponíveis globalmente
+window.showDetails = showDetails;
+window.closeModal = closeModal;
+window.copyText = copyText;
+window.toggleFavorite = toggleFavorite;
+window.deleteEntry = deleteEntry;
+window.changePage = changePage;

@@ -1,31 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const { protect } = require('../middleware/auth');
-const {
-    createHistoryEntry,
-    getHistory,
-    getHistoryItem,
-    toggleFavorite,
-    deleteHistoryEntry,
-    updateTags
-} = require('../controllers/historyController');
+const historyController = require('../controllers/historyController');
+const auth = require('../middleware/auth');
 
-// Aplicar proteção em todas as rotas
-router.use(protect);
+// Proteger todas as rotas
+router.use(auth);
 
-// Rotas do histórico
+// Rotas básicas
 router.route('/')
-    .get(getHistory)
-    .post(createHistoryEntry);
+    .get(historyController.getHistory)
+    .post(historyController.createHistory);
 
 router.route('/:id')
-    .get(getHistoryItem)
-    .delete(deleteHistoryEntry);
+    .get(historyController.getHistoryItem)
+    .delete(historyController.deleteHistory);
 
-router.route('/:id/favorite')
-    .patch(toggleFavorite);
-
-router.route('/:id/tags')
-    .patch(updateTags);
+// Rotas adicionais
+router.patch('/:id/tags', historyController.updateTags);
+router.patch('/:id/favorite', historyController.toggleFavorite);
 
 module.exports = router;

@@ -2,34 +2,37 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const UserSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'Please add a name']
+        required: [true, 'Por favor, informe seu nome']
     },
     email: {
         type: String,
-        required: [true, 'Please add an email'],
+        required: [true, 'Por favor, informe seu email'],
         unique: true,
-        match: [
-            /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-            'Please add a valid email'
-        ]
+        lowercase: true,
+        match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Por favor, informe um email válido']
     },
     password: {
         type: String,
-        required: [true, 'Please add a password'],
+        required: [true, 'Por favor, informe uma senha'],
         minlength: 6,
         select: false
     },
-    subscription: {
+    stripeCustomerId: String,
+    subscriptionStatus: {
+        type: String,
+        enum: ['inactive', 'active', 'past_due', 'canceled'],
+        default: 'inactive'
+    },
+    subscriptionPlan: {
         type: String,
         enum: ['free', 'pro', 'enterprise'],
         default: 'free'
     },
-    stripeCustomerId: {
-        type: String
-    },
+    subscriptionId: String,
+    passwordChangedAt: Date,
     usageCount: {
         type: Number,
         default: 0
@@ -37,28 +40,54 @@ const UserSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
     }
 });
 
-// Encrypt password using bcrypt
-UserSchema.pre('save', async function(next) {
-    if (!this.isModified('password')) {
-        next();
-    }
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+// Middleware para atualizar timestamps
+userSchema.pre('save', function(next) {
+    this.updatedAt = new Date();
+    next();
 });
 
-// Sign JWT and return
-UserSchema.methods.getSignedJwtToken = function() {
-    return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRE
-    });
+// Middleware para atualizar timestamps em updates
+userSchema.pre(['updateOne', 'findOneAndUpdate'], function(next) {
+    this.set({ updatedAt: new Date() });
+    next();
+});
+
+// Criptografar senha antes de salvar
+userSchema.pre('save', async function(next) {
+    if (!this.isModified('password')) return next();
+    
+    this.password = await bcrypt.hash(this.password, 12);
+    next();
+});
+
+// Verificar se a senha está correta
+userSchema.methods.correctPassword = async function(candidatePassword, userPassword) {
+    return await bcrypt.compare(candidatePassword, userPassword);
 };
 
-// Match user entered password to hashed password in database
-UserSchema.methods.matchPassword = async function(enteredPassword) {
-    return await bcrypt.compare(enteredPassword, this.password);
+// Gerar token JWT
+userSchema.methods.generateAuthToken = function() {
+    return jwt.sign(
+        { id: this._id },
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRES_IN }
+    );
 };
 
-module.exports = mongoose.model('User', UserSchema);
+// Verificar se a senha foi alterada após o token ser emitido
+userSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
+    if (this.passwordChangedAt) {
+        const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+        return JWTTimestamp < changedTimestamp;
+    }
+    return false;
+};
+
+module.exports = mongoose.model('User', userSchema);

@@ -84,6 +84,7 @@
 
         <!-- Modal de Detalhes -->
         <div id="detailsModal" class="modal">
+            <div class="modal-overlay"></div>
             <div class="modal-content">
                 <div class="modal-header">
                     <h2>Detalhes da Criptografia</h2>
@@ -92,27 +93,31 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Texto Original</label>
-                        <textarea id="originalText" readonly rows="3"></textarea>
-                        <button class="btn btn-outline btn-sm" onclick="copyText('originalText')">
-                            <i class="far fa-copy"></i> Copiar
-                        </button>
+                        <div class="text-area">
+                            <textarea id="originalText" readonly rows="3"></textarea>
+                            <button class="btn btn-outline btn-sm" onclick="copyText('originalText')">
+                                <i class="far fa-copy"></i> Copiar
+                            </button>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label>Texto Criptografado</label>
-                        <textarea id="encryptedText" readonly rows="3"></textarea>
-                        <button class="btn btn-outline btn-sm" onclick="copyText('encryptedText')">
-                            <i class="far fa-copy"></i> Copiar
-                        </button>
+                        <div class="text-area">
+                            <textarea id="encryptedText" readonly rows="3"></textarea>
+                            <button class="btn btn-outline btn-sm" onclick="copyText('encryptedText')">
+                                <i class="far fa-copy"></i> Copiar
+                            </button>
+                        </div>
                     </div>
 
                     <div class="details-meta">
                         <div class="meta-item">
-                            <label>Tipo de Criptografia:</label>
+                            <label>Tipo de Criptografia</label>
                             <span id="encryptionType"></span>
                         </div>
                         <div class="meta-item">
-                            <label>Data:</label>
+                            <label>Data</label>
                             <span id="createdAt"></span>
                         </div>
                     </div>

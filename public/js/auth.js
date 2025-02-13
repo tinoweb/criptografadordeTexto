@@ -39,13 +39,13 @@ async function checkAuthStatus() {
         }
 
         const data = await response.json();
-        if (!data.success) {
-            throw new Error(data.error || 'Erro na verificação do token');
+        if (data.status !== 'success') {
+            throw new Error(data.message || 'Erro na verificação do token');
         }
 
         // Token válido, atualizar dados do usuário
-        localStorage.setItem('user', JSON.stringify(data.data));
-        updateUIForLoggedIn(data.data);
+        localStorage.setItem('user', JSON.stringify(data.data.user));
+        updateUIForLoggedIn(data.data.user);
         
     } catch (error) {
         console.error('Erro ao verificar autenticação:', error);
